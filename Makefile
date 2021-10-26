@@ -2,7 +2,7 @@ CC=gcc
 LD=gcc
 CFLAGS=-g -Wall 
 CPPFLAGS=-I. -I include
-SP_LIBRARY= ./libspread-core.a  ./libspread-util.a
+SP_LIBRARY= libspread-core.a  libspread-util.a
 
 all: sp_user class_user
 
