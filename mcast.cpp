@@ -24,6 +24,10 @@ static  void	Bye();
 long long diff_ms(timeval, timeval);
 void get_performance(const struct timeval&);
 
+struct Message{
+    
+}
+
 int main(int argc, char * argv[])
 {
     std::stringstream s1(argv[1]);
@@ -110,7 +114,7 @@ int main(int argc, char * argv[])
         if( Is_regular_mess( service_type ) )
         {
             std::cout << "received regular messages." << std::endl;
-
+            // TODO: complete this
         }else if( Is_membership_mess( service_type ) )
         {
             std::cout << "received membership message from group " << sender << std::endl;
@@ -137,32 +141,31 @@ int main(int argc, char * argv[])
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
 
-        // wait for every other process the join the group
+        // send after every other process the join the group
         if(all_joined) {
-        }
-
-//        while (all_joined) { //multicast happens
+            //        while (all_joined) { //multicast happens
 //            for sendmax && if not sent last msg
 //            sp_multicast
 //            handle receive, write to file
-//        }
+        }
 
 //        break if num_last message == n
+        }
     }
 
-//    cout << "everything is received!" << endl;
+    cout << "everything is received!" << endl;
 
     get_performance(started_timestamp);
     return 0;
 }
 
 void get_performance(const struct timeval& started_timestamp){
+    // TODO: complete this
 //    struct timeval ended_timestamp;
 //    gettimeofday(&ended_timestamp, nullptr);
 //    auto msec = diff_ms(ended_timestamp, started_timestamp);
 //    auto total_packet = aru;
 //    auto pakcet_size_in_bytes = sizeof(Message);
-
 }
 
 static  void	Bye()
