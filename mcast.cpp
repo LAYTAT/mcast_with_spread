@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sstream>
+#include <iostream>
 
 
 static	char	User[80];
@@ -48,8 +49,8 @@ int main(int argc, char * argv[])
     s1 >> num_mes;
     s2 >> p_id;
     s3 >> num_proc;
-    Spread_name = "4803";
-    User = "user";
+    sprintf( User, "user" );
+	sprintf( Spread_name, "4803");
 
 
     ret = SP_connect_timeout( Spread_name, User, 0, 1, &Mbox, Private_group, test_timeout );
@@ -58,6 +59,7 @@ int main(int argc, char * argv[])
 		SP_error( ret );
 		Bye();
 	 }
+     std::cout << "Connected to Spread!" << std::endl;
 
      return 0;
 }
