@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
+
 
 static	char	User[80];
 static  char    Spread_name[80];
@@ -39,14 +41,15 @@ int main(int argc, char * argv[])
     bool all_joined = false;  //did all processes join?
     bool all_finished = false; //did all processes finished?
 
+    sp_time test_timeout;
     test_timeout.sec = 5;
     test_timeout.usec = 0;
 
     s1 >> num_mes;
     s2 >> p_id;
     s3 >> num_proc;
-    Spread_name = '4803';
-    User = 'user';
+    Spread_name = "4803";
+    User = "user";
 
 
     ret = SP_connect_timeout( Spread_name, User, 0, 1, &Mbox, Private_group, test_timeout );
@@ -55,7 +58,7 @@ int main(int argc, char * argv[])
 		SP_error( ret );
 		Bye();
 	 }
-     
+
      return 0;
 }
 
