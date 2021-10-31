@@ -16,16 +16,10 @@ sp_user:  user.o
 class_user:  class_user.o
 	$(LD) -o $@ class_user.o -ldl $(SP_LIBRARY)
 
-mcast: mcast.o Processor.o recv_dbg.o
-	$(LD) -o $@ mcast.o Processor.o recv_dbg.o -ldl $(SP_LIBRARY)
+mcast: mcast.o 
+	$(LD) -o $@ mcast.o -ldl $(SP_LIBRARY)
 
 mcast.o: mcast.cpp
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
-Processor.o: Processor.cpp
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
-recv_dbg.o: recv_dbg.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 clean:
