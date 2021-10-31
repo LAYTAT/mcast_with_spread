@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sstream>
 #include <iostream>
+#include <sys/time.h>
 
 #define MAX_MESSLEN     102400
 #define MAX_VSSETS      10
@@ -21,6 +22,7 @@ static  int     To_exit = 0;
 
 static  void	Bye();
 long long diff_ms(timeval, timeval);
+void get_performance(const struct timeval&);
 
 int main(int argc, char * argv[])
 {
@@ -111,7 +113,7 @@ int main(int argc, char * argv[])
 
         }else if( Is_membership_mess( service_type ) )
         {
-            cout << "received membership message from group " << sender << endl;
+            std::cout << "received membership message from group " << sender << std::endl;
             ret = SP_get_memb_info( mess, service_type, &memb_info );
             if (ret < 0) {
                 printf("BUG: membership message does not have valid body\n");
@@ -123,7 +125,7 @@ int main(int argc, char * argv[])
                 printf("Received REGULAR membership for group %s with %d members, where I am member %d:\n",
                        sender, num_groups, mess_type );
                 if(num_proc == num_groups) {
-                    cout << "everyone in the group has joined!" << endl;
+                    std::cout << "everyone in the group has joined!" << std::endl;
                     all_joined = true;
                     // start performance counter is all joined, here we assume that nobody crushes before finish, therefore
                     // assume that no one is getting out of the group once joined until finished
