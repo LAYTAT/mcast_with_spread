@@ -151,9 +151,9 @@ int main(int argc, char * argv[])
 
 //        break if num_last message == n
         }
-    }
 
-    cout << "everything is received!" << endl;
+
+    std::cout << "everything is received!" << std::endl;
 
     get_performance(started_timestamp);
     return 0;
