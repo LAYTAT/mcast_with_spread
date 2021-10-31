@@ -10,6 +10,7 @@
 #define MAX_MESSLEN     102400
 #define MAX_VSSETS      10
 #define MAX_MEMBERS     100
+#define PAYLOAD_SIZE    1300  // required size, do not change this
 
 static	char	User[80];
 static  char    Spread_name[80];
@@ -25,8 +26,11 @@ long long diff_ms(timeval, timeval);
 void get_performance(const struct timeval&);
 
 struct Message{
-    
-}
+    int32_t proc_id;
+    int32_t msg_id;
+    int32_t rand_num;
+    char payload[PAYLOAD_SIZE];
+};
 
 int main(int argc, char * argv[])
 {
@@ -73,6 +77,7 @@ int main(int argc, char * argv[])
     int		 endian_mismatch;
     int		 i,j;
     struct timeval started_timestamp;
+    int     aru=0;
 
     ret = SP_connect_timeout( Spread_name, User, 0, 1, &Mbox, Private_group, test_timeout );
 	if( ret != ACCEPT_SESSION ) 
@@ -155,17 +160,20 @@ int main(int argc, char * argv[])
 
     std::cout << "everything is received!" << std::endl;
 
-    get_performance(started_timestamp);
+    get_performance(started_timestamp, aru);
     return 0;
 }
 
-void get_performance(const struct timeval& started_timestamp){
-    // TODO: complete this
-//    struct timeval ended_timestamp;
-//    gettimeofday(&ended_timestamp, nullptr);
-//    auto msec = diff_ms(ended_timestamp, started_timestamp);
-//    auto total_packet = aru;
-//    auto pakcet_size_in_bytes = sizeof(Message);
+void get_performance(const struct timeval& started_timestamp, int total_packet){
+    struct timeval ended_timestamp;
+    gettimeofday(&ended_timestamp, nullptr);
+    auto msec = diff_ms(ended_timestamp, started_timestamp);
+    auto pakcet_size_in_bytes = sizeof(Message);
+
+    std::cout << "============================Performance========================== " << std::endl;
+    std::cout << "Transmission time:  " << msec << " ms." << std::endl;
+    std::cout << "Total num of pcks:  " << total_packet << "." << std::endl;
+    std::cout << "Transmission speed: " << static_cast<double>((performance.pakcet_size_in_bytes * performance.total_packet) * 8)  / static_cast<double>(1000 * performance.msec)<< " Mbits per second. " << std::endl;
 }
 
 static  void	Bye()
