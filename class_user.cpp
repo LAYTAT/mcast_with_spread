@@ -67,11 +67,11 @@ static  void	Bye();
 int main( int argc, char *argv[] )
 {
 	int     ret;
-        int     mver, miver, pver;
-        sp_time test_timeout;
+    int     mver, miver, pver;
+    sp_time test_timeout;
 
-        test_timeout.sec = 5;
-        test_timeout.usec = 0;
+    test_timeout.sec = 5;
+    test_timeout.usec = 0;
 
 	Usage( argc, argv );
         if (!SP_version( &mver, &miver, &pver)) 
