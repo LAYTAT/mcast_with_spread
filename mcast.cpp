@@ -23,7 +23,7 @@ static  int     To_exit = 0;
 
 static  void	Bye();
 long long diff_ms(timeval, timeval);
-void get_performance(const struct timeval&);
+void get_performance(const struct timeval&, int);
 
 struct Message{
     int32_t proc_id;
