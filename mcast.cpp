@@ -173,7 +173,7 @@ void get_performance(const struct timeval& started_timestamp, int total_packet){
     std::cout << "============================Performance========================== " << std::endl;
     std::cout << "Transmission time:  " << msec << " ms." << std::endl;
     std::cout << "Total num of pcks:  " << total_packet << "." << std::endl;
-    std::cout << "Transmission speed: " << static_cast<double>((performance.pakcet_size_in_bytes * performance.total_packet) * 8)  / static_cast<double>(1000 * performance.msec)<< " Mbits per second. " << std::endl;
+    std::cout << "Transmission speed: " << static_cast<double>((pakcet_size_in_bytes * total_packet) * 8)  / static_cast<double>(1000 * msec)<< " Mbits per second. " << std::endl;
 }
 
 static  void	Bye()
