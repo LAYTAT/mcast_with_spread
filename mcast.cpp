@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <sys/time.h>
-
+#include <vector>
 using namespace std;
 
 #define MAX_MESSLEN     102400
@@ -26,7 +26,7 @@ static  int     To_exit = 0;
 static  void	Bye();
 long long diff_ms(timeval, timeval);
 void get_performance(const struct timeval&, int);
-void update_sending_buf(Message *, int, int);
+void update_sending_buf(Message*, int, int);
 void send_msg(Message *, int);
 bool is_all_finished(const vector<bool>& v);
 
@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool can_send = false;     //for flow control
     bool all_sent = false; //did process send all messages?
-    float OK_TO_SEND_PERCENT = 1f;
+    float OK_TO_SEND_PERCENT = 1.0f;
     int SENDING_QUOTA = 10;
     int received_count = 0;
 
@@ -131,14 +131,14 @@ int main(int argc, char * argv[])
 
         // receive
         ret = SP_receive( Mbox, &service_type, sender, 10, &num_groups, target_groups,
-                          &mess_type, &endian_mismatch, sizeof(Message), receive_buf );
+                          &mess_type, &endian_mismatch, sizeof(Message),(char *) receive_buf );
         if( ret < 0 )
         {
             if ( (ret == GROUPS_TOO_SHORT) || (ret == BUFFER_TOO_SHORT) ) {
                 service_type = DROP_RECV;
                 printf("\n========Buffers or Groups too Short=======\n");
                 ret = SP_receive( Mbox, &service_type, sender, MAX_MEMBERS, &num_groups, target_groups,
-                                  &mess_type, &endian_mismatch, sizeof(Message), receive_buf);
+                                  &mess_type, &endian_mismatch, sizeof(Message),(char *) receive_buf);
             }
         }
         if (ret < 0 )
@@ -258,7 +258,7 @@ long long diff_ms(timeval t1, timeval t2)
     return (diff.tv_sec * 1000 + diff.tv_usec / 1000);
 }
 
-void update_sending_buf(Message * msg, int proc_id, int msg_id){
+void update_sending_buf(Message* msg, int proc_id, int msg_id){
     msg->rand_num = rand() % 1000000 + 1;
     msg->proc_id = proc_id;
     msg->msg_id;
