@@ -9,6 +9,18 @@
 #include <vector>
 using namespace std;
 
+enum class MSG_TYPE{
+    NORMAL_DATA = 1,
+    LAST_DATA = 2
+};
+
+struct Message{
+    int32_t proc_id;
+    int32_t msg_id;
+    int32_t rand_num;
+    char payload[PAYLOAD_SIZE];
+};
+
 #define MAX_MESSLEN     102400
 #define MAX_VSSETS      10
 #define MAX_MEMBERS     100
@@ -30,17 +42,6 @@ void update_sending_buf(Message*, int, int);
 void send_msg(Message *, int);
 bool is_all_finished(const vector<bool>& v);
 
-enum class MSG_TYPE{
-    NORMAL_DATA = 1,
-    LAST_DATA = 2
-};
-
-struct Message{
-    int32_t proc_id;
-    int32_t msg_id;
-    int32_t rand_num;
-    char payload[PAYLOAD_SIZE];
-};
 
 int main(int argc, char * argv[])
 {
