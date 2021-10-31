@@ -146,9 +146,9 @@ int main( int argc, char *argv[] )
 
 #ifndef	_REENTRANT
 	E_init();
-	E_attach_fd( 0, READ_FD, User_command, 0, NULL, LOW_PRIORITY );
+	E_attach_fd( 0, READ_FD, (void (*)(int, int, void*)) User_command, 0, NULL, LOW_PRIORITY );
 
-	E_attach_fd( Mbox, READ_FD, Read_message, 0, NULL, HIGH_PRIORITY );
+	E_attach_fd( Mbox, READ_FD, (void (*)(int, int, void*)) Read_message, 0, NULL, HIGH_PRIORITY );
 #endif	/* _REENTRANT */
 
 	Print_menu();
@@ -367,7 +367,7 @@ static	void	User_command()
 
 		case 'e':
 
-			E_attach_fd( Mbox, READ_FD, Read_message, 0, NULL, HIGH_PRIORITY );
+			E_attach_fd( Mbox, READ_FD, (void (*)(int, int, void*)) Read_message, 0, NULL, HIGH_PRIORITY );
 
 			break;
 
