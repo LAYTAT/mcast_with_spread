@@ -54,6 +54,7 @@ int main(int argc, char * argv[])
     int num_mes = 0; //number of messages
     int p_id = 0; //process id
     int num_proc = 0; //number of processes
+    int finish_count = 0;
 
     s1>>num_mes;
     s2>>p_id;
@@ -161,8 +162,9 @@ int main(int argc, char * argv[])
                 finished_member[receive_buf.proc_id] = true;
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 can_send = true;
+                finish_count++;
             }
-            if(is_all_finished(finished_member)){
+            if(finish_count == num_proc){
                 all_finished = true;
                 break;
             }
@@ -281,10 +283,4 @@ void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num
     }
 }
 
-bool is_all_finished(const vector<bool>& v){
-    for(auto i : v) {
-        if(!i)
-            return false;
-    }
-    return true;
-}
+
