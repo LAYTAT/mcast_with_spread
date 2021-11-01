@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sys/time.h>
 #include <vector>
+#include <assert.h>
 
 using namespace std;
 
@@ -71,8 +72,8 @@ int main(int argc, char * argv[])
     int received_count = 0;
 
     //buffer
-    static Message receive_buf;
-    static Message sending_buf;
+    Message receive_buf;
+    Message sending_buf;
 
     // for ending
     vector<bool> finished_member(num_proc, false);
@@ -267,11 +268,12 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
 }
 
 void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent) {
+    assert(sizeof(Message) == 1312);
     int ret;
     if(snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
-        ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message),snd_msg_buf);
+        ret= SP_multicast( Mbox, AGREED_MESS, num_groups, (const char (*)[MAX_GROUP_NAME])group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message),snd_msg_buf);
     } else {
-        ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),snd_msg_buf);
+        ret= SP_multicast( Mbox, AGREED_MESS, num_groups, (const char (*)[MAX_GROUP_NAME])group, (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),snd_msg_buf);
     }
     if( ret < 0 )
     {
