@@ -43,7 +43,7 @@ void get_performance(const struct timeval&, int);
 void update_sending_buf(Message*, int, int);
 void send_msg(Message *, int, int);
 bool is_all_finished(const vector<bool>& v);
-
+void p_v(const vector<bool>&);
 
 int main(int argc, char * argv[])
 {
@@ -160,6 +160,7 @@ int main(int argc, char * argv[])
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
+                p_v(finished_member);
                 can_send = true;
             }
             aru++;
@@ -293,7 +294,6 @@ bool is_all_finished(const vector<bool>& v){
         if(!v[i])
             return false;
     }
-    p_v(v);
     return true;
 }
 
