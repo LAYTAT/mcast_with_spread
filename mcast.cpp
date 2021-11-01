@@ -162,13 +162,12 @@ int main(int argc, char * argv[])
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 can_send = true;
             }
+            aru++;
+            received_count++;
             if(is_all_finished(finished_member)){
                 all_finished = true;
                 break;
             }
-
-            aru++;
-            received_count++;
             if(received_count >= OK_TO_SEND_PERCENT * num_proc * SENDING_QUOTA){
                 can_send = true;
                 received_count = 0;
@@ -281,11 +280,22 @@ void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num
     }
 }
 
+void p_v(const vector<bool>& v){
+    cout << "[";
+    for(auto i : v) {
+        cout << i << ", ";
+    }
+    cout << endl;
+}
+
 bool is_all_finished(const vector<bool>& v){
     for(int i = 1; i < v.size(); i++){
         if(!v[i])
             return false;
     }
+    p_v(v);
     return true;
 }
+
+
 
