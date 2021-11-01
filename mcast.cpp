@@ -157,7 +157,7 @@ int main(int argc, char * argv[])
         {
             cout << "received regular messages." << endl;
             fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
-            if(mess_type == MSG_TYPE::LAST_DATA){
+            if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
                 can_send = true;
             }
@@ -176,7 +176,7 @@ int main(int argc, char * argv[])
         }else if( Is_membership_mess( service_type ) )
         {
             cout << "received membership message from group " << sender << endl;
-            ret = SP_get_memb_info( &receive_buf, service_type, &memb_info );
+            ret = SP_get_memb_info( (const char *)&receive_buf, service_type, &memb_info );
             if (ret < 0) {
                 printf("BUG: membership message does not have valid body\n");
                 SP_error( ret );
@@ -269,9 +269,9 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
 void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent) {
     int ret;
     if(snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
-        ret= SP_multicast( Mbox, AGREED_MESS, group, MSG_TYPE::LAST_DATA, sizeof(Message),snd_msg_buf);
+        ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message),snd_msg_buf);
     } else {
-        ret= SP_multicast( Mbox, AGREED_MESS, group, MSG_TYPE::NORMAL_DATA, sizeof(Message),snd_msg_buf);
+        ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),snd_msg_buf);
     }
     if( ret < 0 )
     {
