@@ -58,6 +58,7 @@ int main(int argc, char * argv[])
     s1>>num_mes;
     s2>>p_id;
     s3>>num_proc;
+    int sending_proc_num = num_proc;
 
     int ret = 0; 
 
@@ -160,6 +161,7 @@ int main(int argc, char * argv[])
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
+                sending_proc_num--;
                 p_v(finished_member);
                 can_send = true;
             }
@@ -169,7 +171,7 @@ int main(int argc, char * argv[])
                 all_finished = true;
                 break;
             }
-            if(received_count >= OK_TO_SEND_PERCENT * num_proc * SENDING_QUOTA){
+            if(received_count >= OK_TO_SEND_PERCENT * sending_proc_num * SENDING_QUOTA){
                 can_send = true;
                 received_count = 0;
             }
@@ -296,6 +298,5 @@ bool is_all_finished(const vector<bool>& v){
     }
     return true;
 }
-
 
 
