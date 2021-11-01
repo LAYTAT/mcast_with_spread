@@ -71,8 +71,8 @@ int main(int argc, char * argv[])
     int received_count = 0;
 
     //buffer
-    Message receive_buf;
-    Message sending_buf;
+    static Message receive_buf;
+    static Message sending_buf;
 
     // for ending
     vector<bool> finished_member(num_proc, false);
