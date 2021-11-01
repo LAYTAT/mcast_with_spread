@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
     s3 >> num_proc;
     sprintf( User, "user" );
 	sprintf( Spread_name, "4803");
-    sprintf( group, "chkjjl_group");
+    sprintf( group, "kimjie_group");
 
     // received message
     char	 sender[MAX_GROUP_NAME];
