@@ -41,7 +41,7 @@ static  void	Bye();
 long long diff_ms(timeval, timeval);
 void get_performance(const struct timeval&, int);
 void update_sending_buf(Message*, int, int);
-void send_msg(Message *, int);
+void send_msg(Message *, int, int);
 bool is_all_finished(const vector<bool>& v);
 
 
@@ -210,7 +210,7 @@ int main(int argc, char * argv[])
                         break;
                     }
                     update_sending_buf(&sending_buf, p_id, msg_id);
-                    send_msg(&sending_buf, num_mes);
+                    send_msg(&sending_buf, num_mes, num_groups);
                     msg_id++;
                 }
                 can_send = false;
@@ -267,7 +267,7 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
     msg->msg_id;
 }
 
-void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent) {
+void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num_groups) {
     assert(sizeof(Message) == 1312);
     int ret;
     if(snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
