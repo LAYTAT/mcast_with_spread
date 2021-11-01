@@ -156,7 +156,6 @@ int main(int argc, char * argv[])
         }
         if( Is_regular_mess( service_type ) )
         {
-            cout << "received regular messages." << endl;
             fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
@@ -197,6 +196,7 @@ int main(int argc, char * argv[])
                 for( i=0; i < num_groups; i++ )
                     printf("\t%s\n", &target_groups[i][0] );
                 printf("grp id is %d %d %d\n",memb_info.gid.id[0], memb_info.gid.id[1], memb_info.gid.id[2] );
+                printf("Multicasting...");
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
 
@@ -263,11 +263,10 @@ long long diff_ms(timeval t1, timeval t2)
 void update_sending_buf(Message* msg, int proc_id, int msg_id){
     msg->rand_num = rand() % 1000000 + 1;
     msg->proc_id = proc_id;
-    msg->msg_id;
+    msg->msg_id = msg_id;
 }
 
 void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num_groups) {
-    assert(sizeof(Message) == 1312);
     int ret;
     if(snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
         ret= SP_multigroup_multicast( Mbox, AGREED_MESS, num_groups, (const char (*)[MAX_GROUP_NAME])group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
