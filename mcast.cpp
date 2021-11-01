@@ -65,7 +65,7 @@ int main(int argc, char * argv[])
     int aru = 0;     //the total msg id received for all the messages
     bool all_joined = false;  //did all processes join?
     bool all_finished = false; //did all processes finished?
-    bool can_send = false;     //for flow control
+    bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
     float OK_TO_SEND_PERCENT = 1.0f;
     int SENDING_QUOTA = 10;
