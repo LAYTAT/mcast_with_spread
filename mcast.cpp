@@ -7,7 +7,13 @@
 #include <iostream>
 #include <sys/time.h>
 #include <vector>
+
 using namespace std;
+
+#define MAX_MESSLEN     102400
+#define MAX_VSSETS      10
+#define MAX_MEMBERS     100
+#define PAYLOAD_SIZE    1300  // required size, do not change this
 
 enum class MSG_TYPE{
     NORMAL_DATA = 1,
@@ -20,11 +26,6 @@ struct Message{
     int32_t rand_num;
     char payload[PAYLOAD_SIZE];
 };
-
-#define MAX_MESSLEN     102400
-#define MAX_VSSETS      10
-#define MAX_MEMBERS     100
-#define PAYLOAD_SIZE    1300  // required size, do not change this
 
 static	char	User[80];
 static  char    Spread_name[80];
@@ -74,7 +75,7 @@ int main(int argc, char * argv[])
     Message sending_buf;
 
     // for ending
-    vector<bool> finished_member(num_pro, false);
+    vector<bool> finished_member(num_proc, false);
 
     sp_time test_timeout;
     test_timeout.sec = 5;
@@ -118,7 +119,7 @@ int main(int argc, char * argv[])
 
     // open file
     string filename = to_string(p_id) + ".out";
-    fp = fopen(filename.c_str(), "w");
+    auto fp = fopen(filename.c_str(), "w");
     if (fp == NULL) {
         cerr << "Error: file failed to open" << endl;
         exit(1);
@@ -132,14 +133,14 @@ int main(int argc, char * argv[])
 
         // receive
         ret = SP_receive( Mbox, &service_type, sender, 10, &num_groups, target_groups,
-                          &mess_type, &endian_mismatch, sizeof(Message),(char *) receive_buf );
+                          &mess_type, &endian_mismatch, sizeof(Message),(char *) &receive_buf );
         if( ret < 0 )
         {
             if ( (ret == GROUPS_TOO_SHORT) || (ret == BUFFER_TOO_SHORT) ) {
                 service_type = DROP_RECV;
                 printf("\n========Buffers or Groups too Short=======\n");
                 ret = SP_receive( Mbox, &service_type, sender, MAX_MEMBERS, &num_groups, target_groups,
-                                  &mess_type, &endian_mismatch, sizeof(Message),(char *) receive_buf);
+                                  &mess_type, &endian_mismatch, sizeof(Message),(char *) &receive_buf);
             }
         }
         if (ret < 0 )
@@ -175,7 +176,7 @@ int main(int argc, char * argv[])
         }else if( Is_membership_mess( service_type ) )
         {
             cout << "received membership message from group " << sender << endl;
-            ret = SP_get_memb_info( mess, service_type, &memb_info );
+            ret = SP_get_memb_info( &receive_buf, service_type, &memb_info );
             if (ret < 0) {
                 printf("BUG: membership message does not have valid body\n");
                 SP_error( ret );
@@ -208,7 +209,7 @@ int main(int argc, char * argv[])
                         break;
                     }
                     update_sending_buf(&sending_buf, p_id, msg_id);
-                    send_msg(&sending_buf);
+                    send_msg(&sending_buf, num_mes);
                     msg_id++;
                 }
                 can_send = false;
