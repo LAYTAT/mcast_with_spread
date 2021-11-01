@@ -282,11 +282,14 @@ void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num
 }
 
 bool is_all_finished(const vector<bool>& v){
+    int idx = 0;
     for(auto i : v) {
-        if(i == 0)
+        if(idx == 0){
             continue;
+        }
         if(!i)
             return false;
+        idx++;
     }
     return true;
 }
