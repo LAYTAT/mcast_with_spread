@@ -224,7 +224,6 @@ int main(int argc, char * argv[])
     cout << "everything is received!" << endl;
 
     get_performance(started_timestamp, aru);
-
     //close file
     fflush(fp);
     fclose(fp);
