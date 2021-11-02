@@ -210,13 +210,13 @@ int main(int argc, char * argv[])
             if(can_send & !all_sent) {
                 // send a burst of new messages
                 for(int i = 0; i < SENDING_QUOTA; i++) {
+                    update_sending_buf(&sending_buf, p_id, msg_id);
+                    send_msg(&sending_buf, num_mes, num_groups);
+                    msg_id++;
                     if (msg_id >= num_mes + 1) {
                         all_sent = true;
                         break;
                     }
-                    update_sending_buf(&sending_buf, p_id, msg_id);
-                    send_msg(&sending_buf, num_mes, num_groups);
-                    msg_id++;
                 }
                 can_send = false;
             }
@@ -273,7 +273,7 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
 
 void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num_groups) {
     int ret;
-    if(snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
+    if(snd_msg_buf->msg_id >= total_num_of_packet_to_be_sent) {
         cout << "I have finished sending!!!!!!" << endl;
         ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
     } else {
