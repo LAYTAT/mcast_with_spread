@@ -69,7 +69,7 @@ int main(int argc, char * argv[])
     bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
     float OK_TO_SEND_PERCENT = 1.0f;
-    int SENDING_QUOTA = 10;
+    int SENDING_QUOTA = 30;   //30 for baseline speed
     int received_count = 0;
 
     //buffer
