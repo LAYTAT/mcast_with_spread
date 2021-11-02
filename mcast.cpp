@@ -277,6 +277,12 @@ void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num
     int ret;
     if(snd_msg_buf->msg_id >= total_num_of_packet_to_be_sent) {
         cout << "I have finished sending!!!!!!" << endl;
+        ret= SP_multicast( Mbox, AGREED_MESS, group,  (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),(const char *)snd_msg_buf);
+        if( ret < 0 )
+        {
+            SP_error( ret );
+            Bye();
+        }
         ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
     } else {
         ret= SP_multicast( Mbox, AGREED_MESS, group,  (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),(const char *)snd_msg_buf);
