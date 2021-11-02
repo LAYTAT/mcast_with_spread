@@ -165,7 +165,7 @@ int main(int argc, char * argv[])
         }
         if( Is_regular_mess( service_type ) )
         {
-            cout << "Received: proc_id = "  << receive_buf.proc_id << ", msg_id = " << receive_buf.msg_id << endl;
+//            cout << "Received: proc_id = "  << receive_buf.proc_id << ", msg_id = " << receive_buf.msg_id << endl;
             if((MSG_TYPE)mess_type == MSG_TYPE::NORMAL_DATA){
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
                 aru++;
