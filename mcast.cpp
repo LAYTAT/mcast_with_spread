@@ -70,9 +70,7 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
-    float OK_TO_SEND_PERCENT = 0.8f;
     int SENDING_QUOTA = 30;   //30 for baseline speed
-    int received_count = 0;
 
     //buffer
     Message receive_buf;
@@ -122,7 +120,7 @@ int main(int argc, char * argv[])
     cout << "Mbox from Spread is : " << Mbox << endl;
 
     // open file
-    string filename = to_string(p_id) + ".out";
+    string filename = "/tmp/"+ to_string(p_id) + ".out";
     auto fp = fopen(filename.c_str(), "w");
     if (fp == NULL) {
         cerr << "Error: file failed to open" << endl;
