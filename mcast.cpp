@@ -161,6 +161,7 @@ int main(int argc, char * argv[])
             cout << "Received: proc_id = "  << receive_buf.proc_id << ", msg_id = " << receive_buf.msg_id << endl;
             if((MSG_TYPE)mess_type == MSG_TYPE::NORMAL_DATA){
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
+                aru++;
             }
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
@@ -169,7 +170,6 @@ int main(int argc, char * argv[])
                 p_v(finished_member);
                 can_send = true;
             }
-            aru++;
             received_count++;
             if(is_all_finished(finished_member)){
                 all_finished = true;
@@ -275,7 +275,9 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
 
 void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num_groups) {
     int ret;
-    if(snd_msg_buf->msg_id >= total_num_of_packet_to_be_sent) {
+    if( total_num_of_packet_to_be_sent == 0 ) {
+        ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
+    } else if (snd_msg_buf->msg_id == total_num_of_packet_to_be_sent) {
         cout << "I have finished sending!!!!!!" << endl;
         ret= SP_multicast( Mbox, AGREED_MESS, group,  (short int)MSG_TYPE::NORMAL_DATA, sizeof(Message),(const char *)snd_msg_buf);
         if( ret < 0 )
