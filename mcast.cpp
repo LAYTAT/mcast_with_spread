@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
     s1 >> num_mes;
     s2 >> p_id;
     s3 >> num_proc;
-    sprintf( User, "user" );
+    sprintf( User, "userjiekim" );
 	sprintf( Spread_name, "4803");
     sprintf( group, "kimjie_group");
 
