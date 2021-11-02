@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
-    float OK_TO_SEND_PERCENT = 1.0f;
+    float OK_TO_SEND_PERCENT = 0.8f;
     int SENDING_QUOTA = 30;   //30 for baseline speed
     int received_count = 0;
 
@@ -174,6 +174,7 @@ int main(int argc, char * argv[])
             if(received_count >= OK_TO_SEND_PERCENT * sending_proc_num * SENDING_QUOTA){
                 can_send = true;
                 received_count = 0;
+                OK_TO_SEND_PERCENT = 1.0f;
             }
 
         }else if( Is_membership_mess( service_type ) )
