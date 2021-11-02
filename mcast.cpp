@@ -218,12 +218,12 @@ int main(int argc, char * argv[])
                 while(!send_que.empty()) {
                     int msg_id_2_send = send_que.front();
                     send_que.pop();
-                    update_sending_buf(&sending_buf, p_id, msg_id_2_send);
-                    send_msg(&sending_buf, num_mes, num_groups);
                     if (msg_id_2_send >= num_mes + 1) {
                         all_sent = true;
                         break;
                     }
+                    update_sending_buf(&sending_buf, p_id, msg_id_2_send);
+                    send_msg(&sending_buf, num_mes, num_groups);
                 }
                 can_send = false;
             }
