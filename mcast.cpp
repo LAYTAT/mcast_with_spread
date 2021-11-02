@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
-    int SENDING_QUOTA = 30;   //30 for baseline speed
+    int SENDING_QUOTA = 600;   //30,400,600 for baseline speed
 
     //buffer
     Message receive_buf;
