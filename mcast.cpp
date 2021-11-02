@@ -169,7 +169,7 @@ int main(int argc, char * argv[])
             if((MSG_TYPE)mess_type == MSG_TYPE::NORMAL_DATA){
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
                 aru++;
-                if(receive_buf.proc_id == p_id) {
+                if(receive_buf.proc_id == p_id && !all_sent) {
                     send_que.push(msg_id);
                     msg_id++;
                     can_send = true;
