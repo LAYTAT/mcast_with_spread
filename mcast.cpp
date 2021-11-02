@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <vector>
 #include <assert.h>
+#include <queue>
 
 using namespace std;
 
@@ -36,6 +37,7 @@ static  mailbox Mbox;
 static	int	Num_sent;
 static	unsigned int	Previous_len;
 static  int     To_exit = 0;
+static queue<int> send_que;
 
 static  void	Bye();
 long long diff_ms(timeval, timeval);
@@ -71,7 +73,6 @@ int main(int argc, char * argv[])
     float OK_TO_SEND_PERCENT = 0.8f;
     int SENDING_QUOTA = 30;   //30 for baseline speed
     int received_count = 0;
-    int last_sent_msg_id = 0;
 
     //buffer
     Message receive_buf;
@@ -132,6 +133,12 @@ int main(int argc, char * argv[])
     ret = SP_join( Mbox, group );
     if( ret < 0 ) SP_error( ret );
 
+    // push first burst of packets into queue
+    for(int i = 0; i < SENDING_QUOTA; i++) {
+        send_que.push(msg_id);
+        msg_id++;
+    }
+
     while(!all_finished) {
 
         // receive
@@ -162,25 +169,22 @@ int main(int argc, char * argv[])
             if((MSG_TYPE)mess_type == MSG_TYPE::NORMAL_DATA){
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
                 aru++;
+                if(receive_buf.proc_id == p_id) {
+                    send_que.push(msg_id);
+                    msg_id++;
+                    can_send = true;
+                }
             }
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
                 finished_member[receive_buf.proc_id] = true;
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 sending_proc_num--;
                 p_v(finished_member);
-                can_send = true;
             }
-            received_count++;
             if(is_all_finished(finished_member)){
                 all_finished = true;
                 break;
             }
-            if(received_count >= OK_TO_SEND_PERCENT * sending_proc_num * SENDING_QUOTA){
-                can_send = true;
-                received_count = 0;
-                OK_TO_SEND_PERCENT = 1.0f;
-            }
-
         }else if( Is_membership_mess( service_type ) )
         {
             cout << "received membership message from group " << sender << endl;
@@ -211,11 +215,12 @@ int main(int argc, char * argv[])
         if(all_joined) {
             if(can_send & !all_sent) {
                 // send a burst of new messages
-                for(int i = 0; i < SENDING_QUOTA; i++) {
-                    update_sending_buf(&sending_buf, p_id, msg_id);
+                while(!send_que.empty()) {
+                    int msg_id_2_send = send_que.front();
+                    send_que.pop();
+                    update_sending_buf(&sending_buf, p_id, msg_id_2_send);
                     send_msg(&sending_buf, num_mes, num_groups);
-                    msg_id++;
-                    if (msg_id >= num_mes + 1) {
+                    if (msg_id_2_send >= num_mes + 1) {
                         all_sent = true;
                         break;
                     }
