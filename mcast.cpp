@@ -235,7 +235,6 @@ int main(int argc, char * argv[])
 
     get_performance(started_timestamp, aru);
     //close file
-    fflush(fp);
     fclose(fp);
     return 0;
 }
@@ -304,7 +303,7 @@ void p_v(const vector<bool>& v){
     for(auto i : v) {
         cout << i << ", ";
     }
-    cout << endl;
+    cout << "]" << endl;
 }
 
 bool is_all_finished(const vector<bool>& v){
