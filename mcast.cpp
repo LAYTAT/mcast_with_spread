@@ -8,7 +8,6 @@
 #include <sys/time.h>
 #include <vector>
 #include <assert.h>
-#include <queue>
 
 using namespace std;
 
@@ -37,13 +36,12 @@ static  mailbox Mbox;
 static	int	Num_sent;
 static	unsigned int	Previous_len;
 static  int     To_exit = 0;
-static queue<int> send_que;
 
 static  void	Bye();
 long long diff_ms(timeval, timeval);
 void get_performance(const struct timeval&, int);
 void update_sending_buf(Message*, int, int);
-void send_msg(Message *, int, int);
+void send_msg(Message*, int);
 bool is_all_finished(const vector<bool>& v);
 void p_v(const vector<bool>&);
 
@@ -68,8 +66,8 @@ int main(int argc, char * argv[])
     int aru = 0;     //the total msg id received for all the messages
     bool all_joined = false;  //did all processes join?
     bool all_finished = false; //did all processes finished?
-    bool can_send = true;     //for flow control
     bool all_sent = false; //did process send all messages?
+    bool bursted = false;  // is first round of burst messages sent?
     int SENDING_QUOTA = 600;   //30,400,600 for baseline speed
 
     //buffer
@@ -131,12 +129,6 @@ int main(int argc, char * argv[])
     ret = SP_join( Mbox, group );
     if( ret < 0 ) SP_error( ret );
 
-    // push first burst of packets into queue
-    for(int i = 0; i < SENDING_QUOTA; i++) {
-        send_que.push(msg_id);
-        msg_id++;
-    }
-
     while(!all_finished) {
 
         // receive
@@ -168,9 +160,8 @@ int main(int argc, char * argv[])
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
                 aru++;
                 if(receive_buf.proc_id == p_id && !all_sent) {
-                    send_que.push(msg_id);
-                    msg_id++;
-                    can_send = true;
+                    update_sending_buf(&sending_buf, p_id, msg_id++);
+                    send_msg(&sending_buf, num_mes);
                 }
             }
             if((MSG_TYPE)mess_type == MSG_TYPE::LAST_DATA){
@@ -209,22 +200,17 @@ int main(int argc, char * argv[])
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
 
-        // send after every other process the join the group
-        if(all_joined) {
-            if(can_send & !all_sent) {
-                // send a burst of new messages
-                while(!send_que.empty()) {
-                    int msg_id_2_send = send_que.front();
-                    send_que.pop();
-                    update_sending_buf(&sending_buf, p_id, msg_id_2_send);
-                    send_msg(&sending_buf, num_mes, num_groups);
-                    if (msg_id_2_send + 1 >= num_mes + 1) {
-                        all_sent = true;
-                        break;
-                    }
-                }
-                can_send = false;
+        // send the first burst after every other process the join the group
+        if(!bursted && all_joined & !all_sent) {
+            // push first burst of packets into queue
+            for(int i = 0; i < SENDING_QUOTA && i < num_mes; i++) {
+                update_sending_buf(&sending_buf, p_id, msg_id);
+                send_msg(&sending_buf, num_mes);
+                msg_id++;
             }
+            if(i == num_mes)
+                all_sent = true;
+            bursted = true;
         }
 
 
@@ -275,7 +261,7 @@ void update_sending_buf(Message* msg, int proc_id, int msg_id){
     msg->msg_id = msg_id;
 }
 
-void send_msg(Message * snd_msg_buf, int total_num_of_packet_to_be_sent, int num_groups) {
+void send_msg(Message *snd_msg_buf, int total_num_of_packet_to_be_sent) {
     int ret;
     if( total_num_of_packet_to_be_sent == 0 ) {
         ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
