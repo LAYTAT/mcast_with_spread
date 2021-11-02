@@ -71,6 +71,7 @@ int main(int argc, char * argv[])
     float OK_TO_SEND_PERCENT = 0.8f;
     int SENDING_QUOTA = 30;   //30 for baseline speed
     int received_count = 0;
+    int last_sent_msg_id = 0;
 
     //buffer
     Message receive_buf;
@@ -209,7 +210,7 @@ int main(int argc, char * argv[])
             if(can_send & !all_sent) {
                 // send a burst of new messages
                 for(int i = 0; i < SENDING_QUOTA; i++) {
-                    if (msg_id == num_mes + 1) {
+                    if (msg_id >= num_mes + 1) {
                         all_sent = true;
                         break;
                     }
