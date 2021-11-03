@@ -100,7 +100,6 @@ int main(int argc, char * argv[])
     int		 service_type = 0;
     int16	 mess_type;
     int		 endian_mismatch;
-    int		 i,j;
     struct timeval started_timestamp;
 
     //random seed
@@ -194,20 +193,20 @@ int main(int argc, char * argv[])
                     // assume that no one is getting out of the group once joined until finished
                     gettimeofday(&started_timestamp, nullptr);
                 }
-                for( i=0; i < num_groups; i++ )
+                for(int i=0; i < num_groups; i++ )
                     printf("\t%s\n", &target_groups[i][0] );
                 printf("grp id is %d %d %d\n",memb_info.gid.id[0], memb_info.gid.id[1], memb_info.gid.id[2] );
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
 
         // send the first burst after every other process the join the group
-        if(!bursted && all_joined & !all_sent) {
-            for(int i = 0; i < SENDING_QUOTA && i < num_mes; i++) {
+        if(!bursted && all_joined && !all_sent) {
+            for(int i = 0; i < SENDING_QUOTA && msg_id <= num_mes; i++) {
                 update_sending_buf(&sending_buf, p_id, msg_id);
                 send_msg(&sending_buf, num_mes);
                 msg_id++;
             }
-            if(i == num_mes)
+            if(msg_id + 1 == num_mes)
                 all_sent = true;
             bursted = true;
         }
