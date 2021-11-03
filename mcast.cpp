@@ -197,13 +197,25 @@ int main(int argc, char * argv[])
                     gettimeofday(&started_timestamp, nullptr);
                     // send the first burst after every other process the join the group
                     if(!bursted && all_joined && !all_sent) {
-                        for(int i = 0; i < SENDING_QUOTA && msg_id <= num_mes; i++) {
+                        if (num_mes == 0) {
                             update_sending_buf(&sending_buf, p_id, msg_id);
                             send_msg(&sending_buf, num_mes);
-                            msg_id++;
-                        }
-                        if(msg_id + 1 == num_mes)
                             all_sent = true;
+                        }
+                        else if( num_mes <= SENDING_QUOTA ){
+                            for (int i = 0; i < num_mes; i++) {
+                                update_sending_buf(&sending_buf, p_id, msg_id);
+                                send_msg(&sending_buf, num_mes);
+                                msg_id++;
+                            }
+                            all_sent = true;
+                        } else {
+                            for(int i = 0; i < SENDING_QUOTA; i++) {
+                                update_sending_buf(&sending_buf, p_id, msg_id);
+                                send_msg(&sending_buf, num_mes);
+                                msg_id++;
+                            }
+                        }
                         bursted = true;
                     }
                 }
