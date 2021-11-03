@@ -178,6 +178,7 @@ int main(int argc, char * argv[])
                 if(receive_buf.proc_id != p_id && !all_sent) {
                     // new burst of messages because other got out
                     int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num;
+                    int temp = msg_id;
                     for(int i = SENDING_QUOTA; i < NEW_SENDING_QUOTA; i++) {
                         update_sending_buf(&sending_buf, p_id, msg_id);
                         send_msg(&sending_buf, num_mes);
@@ -189,6 +190,7 @@ int main(int argc, char * argv[])
 
                     }
                     SENDING_QUOTA = NEW_SENDING_QUOTA;
+                    cout << "New burst of messages sent: " << abs(temp - msg_id) << endl;
                 }
             }
             if(is_all_finished(finished_member)){
