@@ -5,16 +5,10 @@ CFLAGS= -std=c++11 -c -Ofast -march=native -flto -Wall -DNDEBUG -frename-registe
 CPPFLAGS=-I. -I include
 SP_LIBRARY= ./libspread-core.a  ./libspread-util.a
 
-all: sp_user class_user mcast
+all: mcast
 
 .o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
-sp_user:  user.o
-	$(LD) -o $@ user.o -ldl $(SP_LIBRARY)
-
-class_user:  class_user.o
-	$(LD) -o $@ class_user.o -ldl $(SP_LIBRARY)
 
 mcast: mcast.o 
 	$(LD) -o $@ mcast.o -ldl $(SP_LIBRARY)
