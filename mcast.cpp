@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool all_sent = false; //did process send all messages?
     bool bursted = false;  // is first round of burst messages sent?
-    int SENDING_QUOTA = 30;   //30,400,600 for baseline speed
+    int SENDING_QUOTA = 200;   //200,30,400,600 for baseline speed
     int GLOBAL_QUOTA = SENDING_QUOTA * num_proc;
 
     //buffer
@@ -177,7 +177,7 @@ int main(int argc, char * argv[])
                 p_v(finished_member);
                 if(receive_buf.proc_id != p_id && !all_sent) {
                     // new burst of messages because other got out
-                    int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num;
+                    int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num + 1;
                     int temp = msg_id;
                     for(int i = SENDING_QUOTA; i < NEW_SENDING_QUOTA; i++) {
                         update_sending_buf(&sending_buf, p_id, msg_id);
@@ -321,9 +321,14 @@ void send_msg(Message *snd_msg_buf, int total_num_of_packet_to_be_sent) {
 }
 
 void p_v(const vector<bool>& v){
+    cout << "Current Finished Members: " << endl;
     cout << "[";
+    int idx = 0;
     for(auto i : v) {
+        if(idx == 0)
+            continue;
         cout << i << ", ";
+        idx++;
     }
     cout << "]" << endl;
 }
