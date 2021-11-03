@@ -36,6 +36,8 @@ static  mailbox Mbox;
 static	int	Num_sent;
 static	unsigned int	Previous_len;
 static  int     To_exit = 0;
+int msg_id = 1;  //the current msg id for the current process
+int aru = 0;     //the total msg id received for all the messages
 
 static  void	Bye();
 long long diff_ms(timeval, timeval);
@@ -60,10 +62,8 @@ int main(int argc, char * argv[])
     s3>>num_proc;
     int sending_proc_num = num_proc;
 
-    int ret = 0; 
+    int ret = 0;
 
-    int msg_id = 1;  //the current msg id for the current process
-    int aru = 0;     //the total msg id received for all the messages
     bool all_joined = false;  //did all processes join?
     bool all_finished = false; //did all processes finished?
     bool all_sent = false; //did process send all messages?
@@ -292,6 +292,7 @@ void send_msg(Message *snd_msg_buf, int total_num_of_packet_to_be_sent) {
     {
         SP_error( ret );
         cout << "Bye: DATA sending." << endl;
+
         Bye();
     }
 }
