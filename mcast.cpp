@@ -16,6 +16,8 @@ using namespace std;
 #define MAX_MEMBERS     100
 #define PAYLOAD_SIZE    1300  // required size, do not change this
 
+#define LOCAL_WINDOW_SIZE 30  // 100
+
 enum class MSG_TYPE{
     NORMAL_DATA = 1,
     LAST_DATA = 2
@@ -70,7 +72,7 @@ int main(int argc, char * argv[])
     bool bursted = false;               // is first round of burst messages sent?
 
     // sending quota
-    int SENDING_QUOTA = 100;            //200,30,400,600 for baseline speed
+    int SENDING_QUOTA = LOCAL_WINDOW_SIZE;
     int sending_proc_num = num_proc;    // the number of active members
     int GLOBAL_QUOTA = SENDING_QUOTA * num_proc;
 
@@ -120,9 +122,10 @@ int main(int argc, char * argv[])
     cout << "Connected to Spread!" << endl;
     cout << "Mbox from Spread is : " << Mbox << endl;
 
-    // open fileviv
+    // open file
     string filename = "/tmp/"+ to_string(p_id) + ".out";
     //string filename = to_string(p_id) + ".out";
+
     auto fp = fopen(filename.c_str(), "w");
     if (fp == NULL) {
         cerr << "Error: file failed to open" << endl;
@@ -161,7 +164,6 @@ int main(int argc, char * argv[])
         }
         if( Is_regular_mess( service_type ) )
         {
-//            cout << "Received: proc_id = "  << receive_buf.proc_id << ", msg_id = " << receive_buf.msg_id << endl;
             if((MSG_TYPE)mess_type == MSG_TYPE::NORMAL_DATA){
                 fprintf(fp, "%2d, %8d, %8d\n", receive_buf.proc_id, receive_buf.msg_id, receive_buf.rand_num);
                 aru++;
@@ -250,6 +252,10 @@ int main(int argc, char * argv[])
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
     }
+
+    //leave Spread
+    ret = SP_leave( Mbox, group );
+    if( ret < 0 ) SP_error( ret );
 
     // calculate the performance
     get_performance(started_timestamp, aru);
