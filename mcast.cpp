@@ -250,7 +250,8 @@ void get_performance(const struct timeval& started_timestamp, int total_packet){
 static  void	Bye()
 {
 	To_exit = 1;
-
+    cout << "Current Aru = " << aru << endl;
+    cout << "Current msg id = " << msg_id << endl;
 	printf("\nBye.\n");
 
 	SP_disconnect( Mbox );
