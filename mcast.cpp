@@ -15,7 +15,7 @@ using namespace std;
 #define PAYLOAD_SIZE    1300  // required size, do not change this
 
 //global windows size is fixed as: LOCAL_WINDOW_SIZE * number of members
-#define LOCAL_WINDOW_SIZE 100  // try with 100,30
+#define LOCAL_WINDOW_SIZE 30  // try with 100,30
 
 enum class MSG_TYPE{
     NORMAL_DATA = 1,
@@ -172,7 +172,7 @@ int main(int argc, char * argv[])
                 finished_member[receive_buf.proc_id] = true;
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 sending_proc_num--;
-                p_v(finished_member);
+//                p_v(finished_member);
                 if(receive_buf.proc_id != p_id && !all_sent) {
                     // new burst of messages because other got out
                     int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num;
@@ -188,7 +188,7 @@ int main(int argc, char * argv[])
 
                     }
                     SENDING_QUOTA = NEW_SENDING_QUOTA;
-                    cout << "New burst of messages sent: " << abs(temp - msg_id) << endl;
+//                    cout << "New burst of messages sent: " << abs(temp - msg_id) << endl;
                 }
             }
             if(is_all_finished(finished_member)){
@@ -197,7 +197,6 @@ int main(int argc, char * argv[])
             }
         }else if( Is_membership_mess( service_type ) )
         {
-            cout << "received membership message from group " << sender << endl;
             ret = SP_get_memb_info( (const char *)&receive_buf, service_type, &memb_info );
             if (ret < 0) {
                 printf("BUG: membership message does not have valid body\n");
@@ -206,8 +205,6 @@ int main(int argc, char * argv[])
             }
             if ( Is_reg_memb_mess( service_type ) )
             {
-                printf("Received REGULAR membership for group %s with %d members, where I am member %d:\n",
-                       sender, num_groups, mess_type );
                 if(num_proc == num_groups) {
                     cout << "everyone in the group has joined!" << endl;
                     all_joined = true;
@@ -236,7 +233,7 @@ int main(int argc, char * argv[])
                             }
                         }
                         bursted = true;
-                        cout << "First burst of message sent with init win size : " << msg_id - 1 << endl;
+//                        cout << "First burst of message sent with init win size : " << msg_id - 1 << endl;
                     }
                 }
             }
