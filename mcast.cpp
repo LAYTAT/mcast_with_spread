@@ -34,8 +34,6 @@ static  char    Spread_name[80];
 static  char    Private_group[MAX_GROUP_NAME];
 static  char    group[80];
 static  mailbox Mbox;
-static	int	Num_sent;
-static	unsigned int	Previous_len;
 static  int     To_exit = 0;
 int msg_id = 1;  //the current msg id for the current process
 int aru = 0;     //the total msg id received for all the messages
@@ -96,10 +94,6 @@ int main(int argc, char * argv[])
     char	 sender[MAX_GROUP_NAME];
     char	 target_groups[MAX_MEMBERS][MAX_GROUP_NAME];
     membership_info  memb_info;
-    vs_set_info      vssets[MAX_VSSETS];
-    unsigned int     my_vsset_index;
-    int      num_vs_sets;
-    char     members[MAX_MEMBERS][MAX_GROUP_NAME];
     int		 num_groups;
     int		 service_type = 0;
     int16	 mess_type;
@@ -245,9 +239,6 @@ int main(int argc, char * argv[])
                         cout << "First burst of message sent with init win size : " << msg_id - 1 << endl;
                     }
                 }
-                for(int i=0; i < num_groups; i++ )
-                    printf("\t%s\n", &target_groups[i][0] );
-                printf("grp id is %d %d %d\n",memb_info.gid.id[0], memb_info.gid.id[1], memb_info.gid.id[2] );
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
     }
@@ -344,7 +335,7 @@ void p_v(const vector<bool>& v){
 }
 
 bool is_all_finished(const vector<bool>& v){
-    for(int i = 1; i < v.size(); i++){
+    for(int i = 1; i < static_cast<int>( v.size()); i++){
         if(!v[i])
             return false;
     }
