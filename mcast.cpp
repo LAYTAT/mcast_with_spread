@@ -174,13 +174,6 @@ int main(int argc, char * argv[])
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 sending_proc_num--;
                 p_v(finished_member);
-                if(receive_buf.proc_id != p_id && !all_sent) {
-                    update_sending_buf(&sending_buf, p_id, msg_id);
-                    send_msg(&sending_buf, num_mes);
-                    if(msg_id == num_mes)
-                        all_sent = true;
-                    msg_id++;
-                }
             }
             if(is_all_finished(finished_member)){
                 all_finished = true;
