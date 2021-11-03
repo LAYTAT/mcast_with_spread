@@ -148,6 +148,8 @@ int main(int argc, char * argv[])
             {
                 SP_error( ret );
                 printf("\n============================\n");
+                cout << "Current Aru = " << aru << endl;
+                cout << "Current msg id = " << msg_id << endl;
                 printf("\nBye.\n");
             }
             exit( 0 );
