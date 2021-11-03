@@ -202,7 +202,6 @@ int main(int argc, char * argv[])
 
         // send the first burst after every other process the join the group
         if(!bursted && all_joined & !all_sent) {
-            // push first burst of packets into queue
             for(int i = 0; i < SENDING_QUOTA && i < num_mes; i++) {
                 update_sending_buf(&sending_buf, p_id, msg_id);
                 send_msg(&sending_buf, num_mes);
@@ -271,6 +270,7 @@ void send_msg(Message *snd_msg_buf, int total_num_of_packet_to_be_sent) {
         if( ret < 0 )
         {
             SP_error( ret );
+            cout << "Bye: NORMAL_DATA sending." << endl;
             Bye();
         }
         ret= SP_multicast( Mbox, AGREED_MESS, group, (short int)MSG_TYPE::LAST_DATA, sizeof(Message), (const char *)snd_msg_buf);
@@ -280,6 +280,7 @@ void send_msg(Message *snd_msg_buf, int total_num_of_packet_to_be_sent) {
     if( ret < 0 )
     {
         SP_error( ret );
+        cout << "Bye: DATA sending." << endl;
         Bye();
     }
 }
