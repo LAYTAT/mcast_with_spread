@@ -195,27 +195,24 @@ int main(int argc, char * argv[])
                     // start performance counter is all joined, here we assume that nobody crushes before finish, therefore
                     // assume that no one is getting out of the group once joined until finished
                     gettimeofday(&started_timestamp, nullptr);
+                    // send the first burst after every other process the join the group
+                    if(!bursted && all_joined && !all_sent) {
+                        for(int i = 0; i < SENDING_QUOTA && msg_id <= num_mes; i++) {
+                            update_sending_buf(&sending_buf, p_id, msg_id);
+                            send_msg(&sending_buf, num_mes);
+                            msg_id++;
+                        }
+                        if(msg_id + 1 == num_mes)
+                            all_sent = true;
+                        bursted = true;
+                    }
                 }
                 for(int i=0; i < num_groups; i++ )
                     printf("\t%s\n", &target_groups[i][0] );
                 printf("grp id is %d %d %d\n",memb_info.gid.id[0], memb_info.gid.id[1], memb_info.gid.id[2] );
             }
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
-
-        // send the first burst after every other process the join the group
-        if(!bursted && all_joined && !all_sent) {
-            for(int i = 0; i < SENDING_QUOTA && msg_id <= num_mes; i++) {
-                update_sending_buf(&sending_buf, p_id, msg_id);
-                send_msg(&sending_buf, num_mes);
-                msg_id++;
-            }
-            if(msg_id + 1 == num_mes)
-                all_sent = true;
-            bursted = true;
-        }
-
-
-        }
+    }
 
 
     cout << "everything is received!" << endl;
