@@ -49,45 +49,47 @@ void p_v(const vector<bool>&);
 
 int main(int argc, char * argv[])
 {
-    stringstream s1(argv[1]);
-    stringstream s2(argv[2]);
-    stringstream s3(argv[3]);
-
     int num_mes = 0; //number of messages
     int p_id = 0; //process id
     int num_proc = 0; //number of processes
 
+    stringstream s1(argv[1]);
+    stringstream s2(argv[2]);
+    stringstream s3(argv[3]);
+
     s1>>num_mes;
     s2>>p_id;
     s3>>num_proc;
-    int sending_proc_num = num_proc;
 
     int ret = 0;
 
-    bool all_joined = false;  //did all processes join?
-    bool all_finished = false; //did all processes finished?
-    bool all_sent = false; //did process send all messages?
-    bool bursted = false;  // is first round of burst messages sent?
-    int SENDING_QUOTA = 200;   //200,30,400,600 for baseline speed
+    // indication for state
+    bool all_joined = false;            //did all processes join?
+    bool all_finished = false;          //did all processes finished?
+    bool all_sent = false;              //did process send all messages?
+    bool bursted = false;               // is first round of burst messages sent?
+
+    // sending quota
+    int SENDING_QUOTA = 100;            //200,30,400,600 for baseline speed
+    int sending_proc_num = num_proc;    // the number of active members
     int GLOBAL_QUOTA = SENDING_QUOTA * num_proc;
 
-    //buffer
+    // spread inputs
+    sprintf( User, "userjiekim_4803_1157" );
+    sprintf( Spread_name, "4803");
+    sprintf( group, "kimjie_group_4803_1157");
+
+    // buffers for sending and receiving
     Message receive_buf;
     Message sending_buf;
 
     // for ending
     vector<bool> finished_member(num_proc+1, false);
 
+    // connect to Spread timeout
     sp_time test_timeout;
     test_timeout.sec = 5;
     test_timeout.usec = 0;
-
-    s1 >> num_mes;
-    s2 >> p_id;
-    s3 >> num_proc;
-    sprintf( User, "userjiekim_4803_1124" );
-	sprintf( Spread_name, "4803");
-    sprintf( group, "kimjie_group_4803_1124");
 
     // received message
     char	 sender[MAX_GROUP_NAME];
@@ -101,13 +103,14 @@ int main(int argc, char * argv[])
     int		 service_type = 0;
     int16	 mess_type;
     int		 endian_mismatch;
-    struct timeval started_timestamp;
 
-    //random seed
+    // for performace calculation
+    struct timeval started_timestamp;
     struct timeval timestamp_for_rand;
     gettimeofday(&timestamp_for_rand, NULL);
     srand(timestamp_for_rand.tv_usec * timestamp_for_rand.tv_sec);
 
+    // connect with sp
     ret = SP_connect_timeout( Spread_name, User, 0, 1, &Mbox, Private_group, test_timeout );
 	if( ret != ACCEPT_SESSION ) 
 	{
@@ -119,7 +122,7 @@ int main(int argc, char * argv[])
 
     // open fileviv
     string filename = "/tmp/"+ to_string(p_id) + ".out";
-//    string filename = to_string(p_id) + ".out";
+    //string filename = to_string(p_id) + ".out";
     auto fp = fopen(filename.c_str(), "w");
     if (fp == NULL) {
         cerr << "Error: file failed to open" << endl;
@@ -248,12 +251,12 @@ int main(int argc, char * argv[])
         }else printf("received message of unknown message type 0x%x with ret %d\n", service_type, ret);
     }
 
-
-    cout << "everything is received!" << endl;
-
+    // calculate the performance
     get_performance(started_timestamp, aru);
+
     //close file
     fclose(fp);
+
     return 0;
 }
 
