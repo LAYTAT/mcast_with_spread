@@ -1,5 +1,4 @@
 #include "sp.h"
-#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +6,6 @@
 #include <iostream>
 #include <sys/time.h>
 #include <vector>
-#include <assert.h>
 
 using namespace std;
 
@@ -16,7 +14,7 @@ using namespace std;
 #define MAX_MEMBERS     100
 #define PAYLOAD_SIZE    1300  // required size, do not change this
 
-#define LOCAL_WINDOW_SIZE 30  // 100
+#define LOCAL_WINDOW_SIZE 30  // 100 global windows size is fixed as: LOCAL_WINDOW_SIZE * number of members
 
 enum class MSG_TYPE{
     NORMAL_DATA = 1,
