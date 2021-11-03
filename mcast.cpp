@@ -14,7 +14,8 @@ using namespace std;
 #define MAX_MEMBERS     100
 #define PAYLOAD_SIZE    1300  // required size, do not change this
 
-#define LOCAL_WINDOW_SIZE 30  // 100 global windows size is fixed as: LOCAL_WINDOW_SIZE * number of members
+//global windows size is fixed as: LOCAL_WINDOW_SIZE * number of members
+#define LOCAL_WINDOW_SIZE 100  // try with 100,30
 
 enum class MSG_TYPE{
     NORMAL_DATA = 1,
