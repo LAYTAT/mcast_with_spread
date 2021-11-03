@@ -84,9 +84,9 @@ int main(int argc, char * argv[])
     s1 >> num_mes;
     s2 >> p_id;
     s3 >> num_proc;
-    sprintf( User, "userjiekim" );
+    sprintf( User, "userjiekim_4803" );
 	sprintf( Spread_name, "4803");
-    sprintf( group, "kimjie_group");
+    sprintf( group, "kimjie_group_4803");
 
     // received message
     char	 sender[MAX_GROUP_NAME];
