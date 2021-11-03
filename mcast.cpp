@@ -325,8 +325,10 @@ void p_v(const vector<bool>& v){
     cout << "[";
     int idx = 0;
     for(auto i : v) {
-        if(idx == 0)
+        if(idx == 0) {
+            idx++;
             continue;
+        }
         cout << i << ", ";
         idx++;
     }
