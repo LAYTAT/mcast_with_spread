@@ -220,7 +220,7 @@ int main(int argc, char * argv[])
                             }
                         }
                         bursted = true;
-                        cout << "First burst of message sent with init win size : " << msg_id << endl;
+                        cout << "First burst of message sent with init win size : " << msg_id - 1 << endl;
                     }
                 }
                 for(int i=0; i < num_groups; i++ )
