@@ -177,7 +177,7 @@ int main(int argc, char * argv[])
                 p_v(finished_member);
                 if(receive_buf.proc_id != p_id && !all_sent) {
                     // new burst of messages because other got out
-                    int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num + 1;
+                    int NEW_SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num;
                     int temp = msg_id;
                     for(int i = SENDING_QUOTA; i < NEW_SENDING_QUOTA; i++) {
                         update_sending_buf(&sending_buf, p_id, msg_id);
