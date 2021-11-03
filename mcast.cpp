@@ -116,9 +116,9 @@ int main(int argc, char * argv[])
     cout << "Connected to Spread!" << endl;
     cout << "Mbox from Spread is : " << Mbox << endl;
 
-    // open file
-//    string filename = "/tmp/"+ to_string(p_id) + ".out";
-    string filename = to_string(p_id) + ".out";
+    // open fileviv
+    string filename = "/tmp/"+ to_string(p_id) + ".out";
+//    string filename = to_string(p_id) + ".out";
     auto fp = fopen(filename.c_str(), "w");
     if (fp == NULL) {
         cerr << "Error: file failed to open" << endl;
