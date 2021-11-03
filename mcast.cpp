@@ -68,7 +68,8 @@ int main(int argc, char * argv[])
     bool all_finished = false; //did all processes finished?
     bool all_sent = false; //did process send all messages?
     bool bursted = false;  // is first round of burst messages sent?
-    int SENDING_QUOTA = 600;   //30,400,600 for baseline speed
+    int SENDING_QUOTA = 30;   //30,400,600 for baseline speed
+    int GLOBAL_QUOTA = SENDING_QUOTA * num_proc;
 
     //buffer
     Message receive_buf;
@@ -174,6 +175,20 @@ int main(int argc, char * argv[])
                 std::cout << receive_buf.proc_id << ": FINISHED!" << std::endl;
                 sending_proc_num--;
                 p_v(finished_member);
+                if(receive_buf.proc_id != p_id && !all_sent) {
+                    // new burst of messages because other got out
+                    SENDING_QUOTA = GLOBAL_QUOTA / sending_proc_num;
+                    for(int i = 0; i < SENDING_QUOTA; i++) {
+                        update_sending_buf(&sending_buf, p_id, msg_id);
+                        send_msg(&sending_buf, num_mes);
+                        if(msg_id == num_mes) {
+                            all_sent = true;
+                            break;
+                        }
+                        msg_id++;
+
+                    }
+                }
             }
             if(is_all_finished(finished_member)){
                 all_finished = true;
